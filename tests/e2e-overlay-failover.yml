@@ -1,0 +1,45 @@
+# End-to-end check of the refusal-driven failover path. The usage endpoint is
+# deliberately unreachable, so the pool has no reading to decide with: it
+# installs the first key, meets the gateway's real 429 GoUsageLimitError, cools
+# that key and re-dispatches the same request on the other subscription.
+#   dsh --profile headless --patch <this file> "reply with OK"
+- id: agent-default-model
+  config:
+    provider: oc-pool-test
+    model: deepseek-v4.1-flash
+- id: llm-pi-ai
+  config:
+    providers:
+      oc-pool-test:
+        displayName: OpenCode Go pool (test)
+        apiKeyEnv: OPENCODE_GO_ACTIVE_KEY
+        api: openai-completions
+        baseURL: https://opencode.ai/zen/go/v1
+        headers:
+          x-opencode-session: dsh-pi-opencode-go
+        models:
+          - id: deepseek-v4.1-flash
+            name: ocgDeepSeek V4.1 Flash
+            contextWindow: 1000000
+            maxTokens: 384000
+            reasoningEfforts:
+              low: low
+              high: high
+              max: max
+            compat:
+              supportsStore: false
+              supportsDeveloperRole: false
+              maxTokensField: max_tokens
+              requiresReasoningContentOnAssistantMessages: true
+              thinkingFormat: deepseek
+- insert:
+    - id: opencode-go-pool
+      name: 'C:/Users/xie_f/.dsh/plugins/dsh-opencode-go-pool/index.js'
+- id: opencode-go-pool
+  config:
+    route: oc-pool-test
+    activeRef: OPENCODE_GO_ACTIVE_KEY
+    keys:
+      - { ref: OPENCODE_GO_API_KEY, label: A }
+      - { ref: OPENCODE_GO_API_KEY_B, label: B }
+    usageUrl: http://127.0.0.1:9/usage

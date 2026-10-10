@@ -1,0 +1,53 @@
+{
+  "name": "dsh-opencode-go-pool",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness plugin: pool several OpenCode Go subscriptions behind one provider route, serve each request with the healthiest key, and fail over when a quota window is spent.",
+  "license": "MIT",
+  "author": "TianYa-DAO <2842425998@qq.com>",
+  "homepage": "https://github.com/TianYa-DAO/dsh-opencode-go-pool#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TianYa-DAO/dsh-opencode-go-pool.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TianYa-DAO/dsh-opencode-go-pool/issues"
+  },
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "tests"
+  ],
+  "scripts": {
+    "test": "node tests/selfcheck.mjs"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "opencode-go",
+    "llm",
+    "key-pool",
+    "failover"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "dsh": {
+    "id": "dsh-opencode-go-pool",
+    "name": "OpenCode Go 多订阅池",
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

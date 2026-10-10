@@ -1,0 +1,14 @@
+# dsh-opencode-go-pool bundle patch: one host row. The pool reads the credential
+# seam and hooks the model-request waterfall, so it needs no client half.
+# Configure it from your own profile patch layer:
+#
+#   - id: opencode-go-pool
+#     config:
+#       route: opencode-go
+#       activeRef: OPENCODE_GO_ACTIVE_KEY
+#       keys:
+#         - { ref: OPENCODE_GO_API_KEY, label: 订阅A }
+#         - { ref: OPENCODE_GO_API_KEY_B, label: 订阅B }
+- insert:
+    - id: opencode-go-pool
+      name: dsh-opencode-go-pool

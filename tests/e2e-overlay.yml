@@ -1,0 +1,48 @@
+# End-to-end check for dsh-opencode-go-pool against the real OpenCode Go gateway.
+# Applied as an extra patch layer over the headless profile:
+#   dsh --profile headless --patch <this file> "reply with OK"
+#
+# The pool pools the two real subscriptions and routes the one test provider
+# through `OPENCODE_GO_ACTIVE_KEY`, which it owns.
+- id: agent-default-model
+  config:
+    provider: oc-pool-test
+    model: deepseek-v4.1-flash
+- id: llm-pi-ai
+  config:
+    providers:
+      oc-pool-test:
+        displayName: OpenCode Go pool (test)
+        apiKeyEnv: OPENCODE_GO_ACTIVE_KEY
+        api: openai-completions
+        baseURL: https://opencode.ai/zen/go/v1
+        headers:
+          x-opencode-session: dsh-pi-opencode-go
+        models:
+          - id: deepseek-v4.1-flash
+            name: ocgDeepSeek V4.1 Flash
+            contextWindow: 1000000
+            maxTokens: 384000
+            reasoningEfforts:
+              low: low
+              high: high
+              max: max
+            compat:
+              supportsStore: false
+              supportsDeveloperRole: false
+              maxTokensField: max_tokens
+              requiresReasoningContentOnAssistantMessages: true
+              thinkingFormat: deepseek
+- insert:
+    - id: opencode-go-pool
+      # An installed profile names the package (`dsh-opencode-go-pool`); a source
+      # run resolves bare names against its own host base, so this fixture enters
+      # by absolute file path instead.
+      name: 'C:/Users/xie_f/.dsh/plugins/dsh-opencode-go-pool/index.js'
+- id: opencode-go-pool
+  config:
+    route: oc-pool-test
+    activeRef: OPENCODE_GO_ACTIVE_KEY
+    keys:
+      - { ref: OPENCODE_GO_API_KEY, label: A }
+      - { ref: OPENCODE_GO_API_KEY_B, label: B }
